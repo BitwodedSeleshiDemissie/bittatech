@@ -1,4 +1,5 @@
 /********** Template CSS **********/
+
 :root {
     --primary: #6222CC;
     --secondary: #FBA504;
@@ -57,7 +58,7 @@ h6,
 }
 
 .btn:hover {
-    box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+    box-shadow: 0 0 50px rgba(0, 0, 0, .5);
 }
 
 .btn-square {
@@ -156,7 +157,7 @@ h6,
     }
 
     .navbar-light .navbar-brand img {
-        max-height: 45px;
+        max-height: 55px;
     }
 }
 
@@ -172,7 +173,7 @@ h6,
     
     .sticky-top.navbar-light {
         position: fixed;
-        background: #FFFFFF;
+        background: #6218d8;
     }
 
     .sticky-top.navbar-light .navbar-brand h1 {
@@ -219,6 +220,7 @@ h6,
         url(../img/blob-bottom-right.png),
         url(../img/blob-center.png),
         url(../img/bg-bottom.png);
+        background-color: #FBA504;
     background-position:
         left 0px top 0px,
         right 0px top 0px,
@@ -588,4 +590,69 @@ h6,
 .footer .copyright a:hover,
 .footer .footer-menu a:hover {
     color: var(--secondary);
+}
+/* Ensure the team-item has enough height and uses flexbox for layout */
+.team-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;  /* Ensure the container expands to fit content */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; /* Smooth transition for hover */
+    background-color: #f8f9fa;  /* Default background color */
+    border-radius: 10px; /* Optional rounded corners */
+}
+
+/* Add a hover effect for the entire team-item */
+.team-item:hover {
+    transform: translateY(-10px); /* Slightly lift the item */
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1); /* Add a shadow */
+    background-color: #007bff;  /* Change background on hover to blue */
+    color: white; /* Change text color to white */
+}
+
+/* Adjust image styling */
+.team-item img {
+    width: 100%; /* Make image fill width */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 10px; /* Optional rounded corners */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth zoom and light effect */
+}
+
+/* Add a glowing effect around the image when hovered */
+.team-item:hover img {
+    transform: scale(1.05); /* Zoom in slightly */
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.7); /* Soft blue glow effect around the image */
+}
+
+/* Adjust spacing for text content */
+.team-item .text-center {
+    margin-bottom: 15px; /* Give some space below image */
+}
+
+.team-item h5 {
+    margin: 10px 0;
+    font-size: 18px; /* Ensure name fits */
+}
+
+.team-item span {
+    font-size: 14px;
+    color: gray;
+}
+
+/* Optional styling for the LinkedIn button */
+.team-item .d-flex {
+    margin-top: 10px; /* Adds some space before button */
+}
+
+/* LinkedIn button styling */
+.team-item .btn-square {
+    color: #0077b5;  /* LinkedIn color */
+    font-size: 18px;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for button */
+}
+
+/* LinkedIn button hover effect */
+.team-item .btn-square:hover {
+    background-color: #0077b5;
+    color: white;
 }
