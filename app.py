@@ -1,35 +1,56 @@
-from flask import Flask, render_template, request, redirect, url_for
-import sqlite3
+import logging
 import os
+import psycopg2
+from flask import Flask, render_template, request, redirect, url_for
+from flask_mail import Mail, Message
+
+# Initialize Flask app
 app = Flask(__name__)
-# Set the path for the SQLite database
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, 'contacts.db')
 
-# Function to initialize the database
-def init_db():
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS contacts (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                email TEXT NOT NULL,
-                subject TEXT,
-                message TEXT,
-                submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
-        conn.commit()
+# Flask-Mail configuration
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465  # SSL port for Gmail
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USERNAME'] = 'your-email@gmail.com'  # Replace with your email
+app.config['MAIL_PASSWORD'] = 'your-email-password'  # Replace with your email password or app password
+app.config['MAIL_DEFAULT_SENDER'] = 'your-email@gmail.com'
 
-# Initialize the database on app startup
-init_db()
+# Initialize Flask-Mail
+mail = Mail(app)
+
+# Database configuration (using PostgreSQL)
+DATABASE_URL = os.getenv('DATABASE_URL')  # Get the database URL from Render environment variable
+
+# Function to connect to the PostgreSQL database
+def get_db():
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    return conn
+
+# Function to initialize the database and create table
+def create_table():
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS messages (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        subject TEXT NOT NULL,
+        message TEXT NOT NULL
+    )
+    ''')
+    conn.commit()
+    conn.close()
+
+# Create the table if it doesn't exist on app startup
+create_table()
 
 # Route for the home page
 @app.route('/')
 def home():
     return render_template('index.html')
 
+# Route for the contact form page
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     if request.method == 'POST':
@@ -39,85 +60,57 @@ def contact():
         subject = request.form.get('subject')
         message = request.form.get('message')
 
-        # Insert data into the database
+        # Save the data to the PostgreSQL database
         try:
-            with sqlite3.connect(DB_PATH) as conn:
-                cursor = conn.cursor()
-                cursor.execute(
-                    "INSERT INTO contacts (name, email, subject, message) VALUES (?, ?, ?, ?)",
-                    (name, email, subject, message)
-                )
-                conn.commit()
-        except sqlite3.Error as e:
-            return f"An error occurred: {e}"
+            conn = get_db()  # Get database connection
+            cursor = conn.cursor()
+            
+            # Insert form data into the database
+            cursor.execute('''
+            INSERT INTO messages (name, email, subject, message)
+            VALUES (%s, %s, %s, %s)
+            ''', (name, email, subject, message))
 
-        print("Form submitted successfully, redirecting to thank_you page.")
-        return redirect(url_for('thank_you'))  # Redirect to the thank-you page
+            conn.commit()  # Commit the transaction
+            conn.close()  # Close the connection
+
+            logging.debug("Message stored in the database successfully.")
+            return redirect(url_for('thank_you'))  # Redirect to thank you page
+
+        except Exception as e:
+            logging.error(f"Error inserting data into the database: {e}")
+            return "There was an error processing your message. Please try again later."
 
     return render_template('contact.html')
 
-
-# Route for thank-you page
-@app.route('/thank-you')
+# Route for the thank-you page
+@app.route('/thank_you')
 def thank_you():
     return render_template('thank_you.html')
+
+# Route to view all submitted messages (for admin)
+@app.route('/view_messages')
+def view_messages():
+    try:
+        conn = get_db()  # Get database connection
+        cursor = conn.cursor()
+        
+        # Retrieve all the messages
+        cursor.execute('SELECT * FROM messages')
+        messages = cursor.fetchall()  # Fetch all rows
+
+        conn.close()  # Close the connection
+
+        return render_template('view_messages.html', messages=messages)
+
+    except Exception as e:
+        logging.error(f"Error retrieving messages: {e}")
+        return "There was an error retrieving the messages."
 
 # Other routes
 @app.route('/app-development')
 def app_development():
     return render_template('app_development.html')
-
-@app.route('/email-marketing')
-def email_marketing():
-    return render_template('email_marketing.html')
-
-@app.route('/ppc-advertising')
-def ppc_advertising():
-    return render_template('ppc_advertising.html')
-
-@app.route('/pricing')
-def pricing():
-    return render_template('pricing.html')
-
-@app.route('/project')
-def project():
-    return render_template('project.html')
-
-@app.route('/privacy-policy')
-def privacy_policy():
-    return render_template('privacy_policy.html')
-
-@app.route('/seo-optimization')
-def seo_optimization():
-    return render_template('seo_optimization.html')
-
-@app.route('/service')
-def service():
-    return render_template('service.html')
-
-@app.route('/social-media-marketing')
-def social_media_marketing():
-    return render_template('social_media_marketing.html')
-
-@app.route('/terms')
-def terms():
-    return render_template('terms.html')
-
-@app.route('/testimonial')
-def testimonial():
-    return render_template('testimonial.html')
-
-@app.route('/web-design')
-def web_design():
-    return render_template('web_design.html')
-
-@app.route('/Help')
-def help():
-    return render_template('help.html')
-
-@app.route('/FQAss')
-def faq():
-    return render_template('faq.html')
 
 # Custom 404 Error Page
 @app.errorhandler(404)
@@ -126,5 +119,4 @@ def page_not_found(e):
 
 # Main entry point
 if __name__ == '__main__':
-    app.run(debug=True)
-
+    app.run(debug=False)
