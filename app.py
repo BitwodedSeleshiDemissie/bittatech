@@ -77,6 +77,7 @@ create_table()
 @app.route('/')
 def home():
     return render_template('index.html')
+
 # Route for the service
 @app.route('/service')
 def service():
@@ -104,13 +105,14 @@ def contact():
             return "There was an error processing your message. Please try again later."
 
     return render_template('contact.html')
+
 @app.route('/project')
 def project():
     return render_template('project.html')
+
 @app.route('/pricing')
 def pricing():
     return render_template('pricing.html')
-
 
 # Route for the thank-you page
 @app.route('/thank_you')
@@ -136,6 +138,47 @@ def view_messages():
 @app.route('/app-development')
 def app_development():
     return render_template('app_development.html')
+
+# Additional Routes
+@app.route('/email-marketing')
+def email_marketing():
+    return render_template('email_marketing.html')
+
+@app.route('/faq')
+def faq():
+    return render_template('faq.html')
+
+@app.route('/help')
+def help():
+    return render_template('help.html')
+
+@app.route('/ppc-advertising')
+def ppc_advertising():
+    return render_template('ppc_advertising.html')
+
+@app.route('/privacy-policy')
+def privacy_policy():
+    return render_template('privacy_policy.html')
+
+@app.route('/seo-optimization')
+def seo_optimization():
+    return render_template('seo_optimization.html')
+
+@app.route('/social-media-marketing')
+def social_media_marketing():
+    return render_template('social_media_marketing.html')
+
+@app.route('/terms')
+def terms():
+    return render_template('terms.html')
+
+@app.route('/testimonial')
+def testimonial():
+    return render_template('testimonial.html')
+
+@app.route('/web-design')
+def web_design():
+    return render_template('web_design.html')
 
 # Custom 404 Error Page
 @app.errorhandler(404)
