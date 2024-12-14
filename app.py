@@ -77,8 +77,8 @@ create_table()
 @app.route('/')
 def home():
     return render_template('index.html')
-# Route for the home page
-@app.route('service')
+# Route for the service
+@app.route('/service')
 def home():
     return render_template('service.html')
 
