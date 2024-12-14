@@ -18,22 +18,25 @@ app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME')  # Default sender
 # Initialize Flask-Mail
 mail = Mail(app)
 
-# Database configuration (using PostgreSQL)
-DATABASE_URL = os.getenv('DATABASE_URL')  # Ensure this environment variable is set on your deployment platform
+import logging
+import psycopg2
+
+# Direct connection string for your Render-hosted PostgreSQL database
+DATABASE_URL = 'postgresql://bittatech_data_user:N7oibExmokOMOAhaMxXclZyRh5vyg8jp@dpg-ctec3aaj1k6c73at5hjg-a/bittatech_data'
 
 # Function to connect to the PostgreSQL database
 def get_db():
     try:
-        conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+        conn = psycopg2.connect(DATABASE_URL, sslmode='require')  # Use sslmode='require' to ensure a secure connection
         return conn
     except Exception as e:
         logging.error(f"Database connection error: {e}")
-        raise
+        raise  # Re-raise the exception to ensure the error is properly handled
 
-# Function to initialize the database and create table
+# Function to initialize the database and create the table
 def create_table():
     try:
-        conn = get_db()
+        conn = get_db()  # Get database connection
         cursor = conn.cursor()
         cursor.execute('''CREATE TABLE IF NOT EXISTS messages (
             id SERIAL PRIMARY KEY,
@@ -42,11 +45,12 @@ def create_table():
             subject TEXT NOT NULL,
             message TEXT NOT NULL
         )''')
-        conn.commit()
-        conn.close()
+        conn.commit()  # Commit the changes
+        conn.close()  # Close the connection
         logging.debug("Table 'messages' checked/created.")
     except Exception as e:
-        logging.error(f"Error creating table: {e}")
+        logging.error(f"Error creating table: {e}")  # Log errors if any
+
 
 # Create the table if it doesn't exist on app startup
 create_table()
