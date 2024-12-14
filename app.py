@@ -202,6 +202,12 @@ def seo_optimization():
 @app.route('/social-media-marketing')
 def social_media_marketing():
     return render_template('social_media_marketing.html')
+@app.route('/login')
+def login():
+    return render_template('login.html')
+@app.route('/sighup')
+def sighup():
+    return render_template('sighup.html')
 
 @app.route('/terms')
 def terms():
