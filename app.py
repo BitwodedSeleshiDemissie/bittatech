@@ -2,7 +2,9 @@ import logging
 import os
 import psycopg2
 from flask import Flask, render_template, request, redirect, url_for
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_mail import Mail, Message
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -11,20 +13,47 @@ app = Flask(__name__)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465  # SSL port for Gmail
 app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')  # Replace with your email (stored securely in environment variables)
-app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')  # Replace with your app password (stored securely)
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')  # Email stored securely in environment variables
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')  # App password stored securely
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME')  # Default sender email
 
 # Initialize Flask-Mail
 mail = Mail(app)
 
-# Direct connection string for your Render-hosted PostgreSQL database
+# Flask-Login configuration
+app.config['SECRET_KEY'] = 'secret'
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+# Database URL
 DATABASE_URL = 'postgresql://bittatech_data_user:N7oibExmokOMOAhaMxXclZyRh5vyg8jp@dpg-ctec3aaj1k6c73at5hjg-a/bittatech_data'
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Function to connect to the PostgreSQL database
+def __init__(self, id, name, surname, email, password):
+
+    self.id = id
+    self.name = name
+    self.surname = surname
+    self.email = email
+    self.password = password
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    db_user = get_user_by_id(user_id)  # Replace with your DAO function to fetch user
+    if db_user:
+        return User(
+            id=db_user['id'],
+            name=db_user['name'],
+            surname=db_user['surname'],
+            email=db_user['email'],
+            password=db_user['password']
+        )
+    return None
+
+# Database connection function
 def get_db():
     try:
         conn = psycopg2.connect(DATABASE_URL, sslmode='require')
@@ -33,7 +62,7 @@ def get_db():
         logging.error(f"Database connection error: {e}")
         raise
 
-# Function to initialize the database and create the table
+# Create messages table
 def create_table():
     try:
         conn = get_db()
@@ -52,7 +81,7 @@ def create_table():
     except Exception as e:
         logging.error(f"Error creating table: {e}")
 
-# Function to insert a message into the database
+# Insert message into database
 def insert_message(name, email, subject, message):
     try:
         conn = get_db()
@@ -69,19 +98,26 @@ def insert_message(name, email, subject, message):
     except Exception as e:
         logging.error(f"Error inserting message: {e}")
 
+# DAO function to fetch user (placeholder)
+def get_user_by_id(user_id):
+    # Replace with actual logic to fetch user from the database
+    return None
 
-# Create the table if it doesn't exist on app startup
-create_table()
-
-# Route for the home page
+# Routes
 @app.route('/')
 def home():
     return render_template('index.html')
 
-# Route for the service
-@app.route('/service')
-def service():
-    return render_template('service.html')
+@app.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
@@ -96,30 +132,18 @@ def contact():
             return "Please fill in all fields."
 
         try:
-            # Insert the form data into the database
             insert_message(name, email, subject, message)
-            logging.debug("Message stored in the database successfully.")
-            return redirect(url_for('thank_you'))  # Redirect to a thank-you page
+            return redirect(url_for('thank_you'))
         except Exception as e:
             logging.error(f"Error processing the contact form: {e}")
             return "There was an error processing your message. Please try again later."
 
     return render_template('contact.html')
 
-@app.route('/project')
-def project():
-    return render_template('project.html')
-
-@app.route('/pricing')
-def pricing():
-    return render_template('pricing.html')
-
-# Route for the thank-you page
 @app.route('/thank_you')
 def thank_you():
     return render_template('thank_you.html')
 
-# Route to view all submitted messages (for admin)
 @app.route('/view_messages')
 def view_messages():
     try:
@@ -134,12 +158,23 @@ def view_messages():
         logging.error(f"Error retrieving messages: {e}")
         return "There was an error retrieving the messages."
 
-# Route for app development services page
+# Additional routes for pages
+@app.route('/service')
+def service():
+    return render_template('service.html')
+
+@app.route('/project')
+def project():
+    return render_template('project.html')
+
+@app.route('/pricing')
+def pricing():
+    return render_template('pricing.html')
+
 @app.route('/app-development')
 def app_development():
     return render_template('app_development.html')
 
-# Additional Routes
 @app.route('/email-marketing')
 def email_marketing():
     return render_template('email_marketing.html')
@@ -184,6 +219,9 @@ def web_design():
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+# Initialize database table
+create_table()
 
 # Main entry point
 if __name__ == '__main__':
