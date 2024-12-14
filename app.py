@@ -107,6 +107,9 @@ def contact():
 @app.route('/project')
 def project():
     return render_template('project.html')
+@app.route('/pricing')
+def pricing():
+    return render_template('pricing.html')
 
 
 # Route for the thank-you page
