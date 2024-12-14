@@ -11,36 +11,42 @@ app = Flask(__name__)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465  # SSL port for Gmail
 app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_USERNAME'] = 'your-email@gmail.com'  # Replace with your email
-app.config['MAIL_PASSWORD'] = 'your-email-password'  # Replace with your email password or app password
-app.config['MAIL_DEFAULT_SENDER'] = 'your-email@gmail.com'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')  # Replace with your email (stored securely in environment variables)
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')  # Replace with your app password (stored securely)
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME')  # Default sender email
 
 # Initialize Flask-Mail
 mail = Mail(app)
 
 # Database configuration (using PostgreSQL)
-DATABASE_URL = os.getenv('DATABASE_URL')  # Get the database URL from Render environment variable
+DATABASE_URL = os.getenv('DATABASE_URL')  # Ensure this environment variable is set on your deployment platform
 
 # Function to connect to the PostgreSQL database
 def get_db():
-    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    return conn
+    try:
+        conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+        return conn
+    except Exception as e:
+        logging.error(f"Database connection error: {e}")
+        raise
 
 # Function to initialize the database and create table
 def create_table():
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS messages (
-        id SERIAL PRIMARY KEY,
-        name TEXT NOT NULL,
-        email TEXT NOT NULL,
-        subject TEXT NOT NULL,
-        message TEXT NOT NULL
-    )
-    ''')
-    conn.commit()
-    conn.close()
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS messages (
+            id SERIAL PRIMARY KEY,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            subject TEXT NOT NULL,
+            message TEXT NOT NULL
+        )''')
+        conn.commit()
+        conn.close()
+        logging.debug("Table 'messages' checked/created.")
+    except Exception as e:
+        logging.error(f"Error creating table: {e}")
 
 # Create the table if it doesn't exist on app startup
 create_table()
@@ -54,22 +60,25 @@ def home():
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     if request.method == 'POST':
-        # Get form data
-        name = request.form.get('name')
-        email = request.form.get('email')
-        subject = request.form.get('subject')
-        message = request.form.get('message')
+        # Get form data and ensure no value is None
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip()
+        subject = request.form.get('subject', '').strip()
+        message = request.form.get('message', '').strip()
+
+        # Validate form fields
+        if not name or not email or not subject or not message:
+            logging.warning("One or more fields are empty.")
+            return "Please fill in all fields."
 
         # Save the data to the PostgreSQL database
         try:
-            conn = get_db()  # Get database connection
+            conn = get_db()
             cursor = conn.cursor()
             
             # Insert form data into the database
-            cursor.execute('''
-            INSERT INTO messages (name, email, subject, message)
-            VALUES (%s, %s, %s, %s)
-            ''', (name, email, subject, message))
+            cursor.execute('''INSERT INTO messages (name, email, subject, message)
+                              VALUES (%s, %s, %s, %s)''', (name, email, subject, message))
 
             conn.commit()  # Commit the transaction
             conn.close()  # Close the connection
@@ -92,7 +101,7 @@ def thank_you():
 @app.route('/view_messages')
 def view_messages():
     try:
-        conn = get_db()  # Get database connection
+        conn = get_db()
         cursor = conn.cursor()
         
         # Retrieve all the messages
@@ -119,4 +128,6 @@ def page_not_found(e):
 
 # Main entry point
 if __name__ == '__main__':
+    # Setup logging configuration
+    logging.basicConfig(level=logging.DEBUG)
     app.run(debug=False)
