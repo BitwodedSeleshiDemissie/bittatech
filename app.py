@@ -79,7 +79,7 @@ def home():
     return render_template('index.html')
 # Route for the service
 @app.route('/service')
-def home():
+def service():
     return render_template('service.html')
 
 @app.route('/contact', methods=['GET', 'POST'])
