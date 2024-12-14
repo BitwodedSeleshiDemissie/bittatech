@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>bittatech</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="{{ url_for('static', filename='img/favi.png') }}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500&family=Jost:wght@500;600;700&display=swap" rel="stylesheet"> 
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{{ url_for('static', filename='lib/animate/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/lightbox/css/lightbox.min.css') }}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <h1>SEO Optimization Services – Drive Traffic, Boost Rankings</h1>
+        <p>At <strong>bittatech</strong>, we provide cutting-edge SEO services designed to elevate your online presence. Whether you’re looking to increase website traffic, improve search rankings, or generate more leads, our comprehensive strategies ensure your business gets noticed by the right audience.</p>
+    </header>
+
+    <section id="why-seo-matters">
+        <h2>Why SEO Matters</h2>
+        <ul>
+            <li><strong>Enhanced Visibility:</strong> Rank higher and increase your online presence.</li>
+            <li><strong>Targeted Traffic:</strong> Attract customers actively searching for your products or services.</li>
+            <li><strong>Cost-Effective Results:</strong> Generate long-term value and higher ROI.</li>
+        </ul>
+    </section>
+
+    <section id="our-services">
+        <h2>Our Comprehensive SEO Services</h2>
+        <article>
+            <h3>Keyword Research & Strategy</h3>
+            <p>We identify high-performing keywords that align with your industry and target audience to ensure your content reaches its full potential.</p>
+        </article>
+
+        <article>
+            <h3>On-Page Optimization</h3>
+            <p>From meta tags and content to images and internal linking, we optimize every element on your website to improve its ranking potential.</p>
+        </article>
+
+        <article>
+            <h3>Technical SEO</h3>
+            <p>Our team ensures your website is fast, secure, and mobile-friendly, with clean code and optimal site architecture for search engine crawlers.</p>
+        </article>
+
+        <article>
+            <h3>Content Marketing</h3>
+            <p>High-quality, engaging content is at the heart of SEO. We create blogs, articles, and website copy that drive traffic and establish your authority.</p>
+        </article>
+
+        <article>
+            <h3>Link Building</h3>
+            <p>Build credibility with authoritative backlinks. Our white-hat link-building strategies improve your domain authority and rankings.</p>
+        </article>
+
+        <article>
+            <h3>Local SEO</h3>
+            <p>Dominate local searches and attract nearby customers with optimized Google My Business listings and geo-targeted strategies.</p>
+        </article>
+
+        <article>
+            <h3>SEO Analytics and Reporting</h3>
+            <p>Track your progress with detailed analytics. We provide regular reports to keep you informed about rankings, traffic, and ROI.</p>
+        </article>
+    </section>
+
+    <section id="why-choose-us">
+        <h2>Why Choose bittatech?</h2>
+        <ul>
+            <li><strong>Expert Team:</strong> Our SEO specialists stay up to date on the latest trends and algorithms.</li>
+            <li><strong>Proven Results:</strong> Trusted by businesses across industries for effective results.</li>
+            <li><strong>Transparent Reporting:</strong> Clear insights and detailed performance updates.</li>
+            <li><strong>Affordable Pricing:</strong> Get premium SEO services at competitive rates.</li>
+        </ul>
+    </section>
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-primary text-light footer wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-5 px-lg-5">
+            <div class="row g-5">
+                <div class="col-md-6 col-lg-3">
+                    <p class="section-title text-white h5 mb-4">Address<span></span></p>
+                    <p><i class="fa fa-map-marker-alt me-3"></i>Via roma 12, Torino, Italy</p>
+                    <p><i class="fa fa-phone-alt me-3"></i>+393342377478</p>
+                    <p><i class="fa fa-envelope me-3"></i>customerservice@bittatech.com</p>
+                    <div class="d-flex pt-2">
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-instagram"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <p class="section-title text-white h5 mb-4">Quick Link<span></span></p>
+                    <a class="btn btn-link" href="{{ url_for('contact') }}">Contact Us</a>
+                    <a class="btn btn-link" href="{{ url_for('privacy_policy') }}">Privacy Policy</a>
+                    <a class="btn btn-link" href="{{ url_for('terms') }}">Terms & Condition</a>
+                    
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <p class="section-title text-white h5 mb-4">Team made by Graduates from Prestigious Universities</p>
+                    <div class="row g-2">
+                        <div class="col-4">
+                            <a href="https://www.harvard.edu/">
+                                <img class="img-fluid" src="{{ url_for('static', filename='img/part1.jpg') }}" alt="Team member 1">
+                            </a>
+                        </div>
+                        <div class="col-4">
+                            <a href="https://www.columbia.edu/">
+                                <img class="img-fluid" src="{{ url_for('static', filename='img/part2.jpg') }}" alt="Team member 2">
+                            </a>
+                        </div>
+                        <div class="col-4">
+                            <a href="https://www.polito.it/">
+                                <img class="img-fluid" src="{{ url_for('static', filename='img/part3.jpg') }}" alt="Team member 3">
+                            </a>
+                        </div>
+                        <div class="col-4">
+                            <a href="https://www.vt.edu/">
+                                <img class="img-fluid" src="{{ url_for('static', filename='img/part4.jpg') }}" alt="Team member 4">
+                            </a>
+                        </div>
+                        <div class="col-4">
+                            <a href="https://www.polimi.it/">
+                                <img class="img-fluid" src="{{ url_for('static', filename='img/part5.jpg') }}" alt="Team member 5">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <p class="section-title text-white h5 mb-4">Newsletter<span></span></p>
+                    <p>subscribe to bittatech newsletter to stay updated with our service</p>
+                    <div class="position-relative w-100 mt-3">
+                        <input class="form-control border-0 rounded-pill w-100 ps-4 pe-5" type="text" placeholder="Your Email" style="height: 48px;">
+                        <button type="button" class="btn shadow-none position-absolute top-0 end-0 mt-1 me-2"><i class="fa fa-paper-plane text-primary fs-4"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container px-lg-5">
+            <div class="copyright">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        &copy; <a class="border-bottom" href="{{ url_for('home') }}">www.bittatech.com</a>, All Rights Reserved.
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <div class="footer-menu">
+                            <a href="{{ url_for('home') }}">Home</a>
+                            <a href="{{ url_for('help') }}">Help</a>
+                            <a href="{{ url_for('faq') }}">FQAs</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+    
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-secondary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='lib/wow/wow.min.js') }}"></script>
+<script src="{{ url_for('static', filename='lib/easing/easing.min.js') }}"></script>
+<script src="{{ url_for('static', filename='lib/waypoints/waypoints.min.js') }}"></script>
+<script src="{{ url_for('static', filename='lib/counterup/counterup.min.js') }}"></script>
+<script src="{{ url_for('static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
+<script src="{{ url_for('static', filename='lib/isotope/isotope.pkgd.min.js') }}"></script>
+<script src="{{ url_for('static', filename='lib/lightbox/js/lightbox.min.js') }}"></script>
+
+<!-- Template Javascript -->
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+
+</body>
+
+</html>
