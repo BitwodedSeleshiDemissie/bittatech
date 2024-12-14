@@ -104,6 +104,10 @@ def contact():
             return "There was an error processing your message. Please try again later."
 
     return render_template('contact.html')
+@app.route('/project')
+def project():
+    return render_template('project.html')
+
 
 # Route for the thank-you page
 @app.route('/thank_you')
