@@ -114,28 +114,24 @@ def get_db():
         logging.error(f"Database connection error: {e}")
         raise
     
-#create user table 
 def create_users_table():
     try:
-        conn = get_db()
-        cursor = conn.cursor()
-        cursor.execute('''CREATE TABLE IF NOT EXISTS users (
-            id SERIAL PRIMARY KEY,
-            name TEXT NOT NULL,
-            email TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )''')
-        conn.commit()
-        cursor.close()
-        conn.close()
-        logging.debug("Table 'users' checked/created.")
+        # Get database connection
+        conn = get_db()  # Ensure this function returns a valid connection
+        with conn:
+            with conn.cursor() as cursor:
+                cursor.execute('''CREATE TABLE IF NOT EXISTS users (
+                    id SERIAL PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
+                    password TEXT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )''')
+                logging.debug("Table 'users' checked/created.")
     except Exception as e:
         logging.error(f"Error creating table: {e}")
-
-
 # Create messages table
-def create_table():
+def create_messages_table():
     try:
         conn = get_db()
         cursor = conn.cursor()
@@ -329,6 +325,10 @@ def page_not_found(e):
 create_table()
 
 # Main entry point
-if __name__ == '__main__':
+if __name__ == "__main__":
+    # Create required tables
     create_users_table()
-    app.run(debug=False)
+    create_messages_table()  # Renamed for clarity
+    
+    # Start the Flask app
+    app.run(debug=True)
