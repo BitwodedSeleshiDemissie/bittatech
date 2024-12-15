@@ -115,11 +115,14 @@ def get_db():
         logging.error(f"Database connection error: {e}")
         raise
     
-#create user table 
+import logging
+
 def users():
     try:
-        conn = get_db()
+        conn = get_db()  # Ensure this function returns a valid DB connection
         cursor = conn.cursor()
+        
+        # Create users table with unique email and timestamp for creation
         cursor.execute('''CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
             name TEXT NOT NULL,
@@ -127,9 +130,11 @@ def users():
             password TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )''')
+        
         conn.commit()
         cursor.close()
         conn.close()
+        
         logging.debug("Table 'users' checked/created.")
     except Exception as e:
         logging.error(f"Error creating table: {e}")
