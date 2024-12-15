@@ -63,13 +63,13 @@ DATABASE_URL = 'postgresql://bittatech_data_user:N7oibExmokOMOAhaMxXclZyRh5vyg8j
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 def get_user_by_email(email):
-    # Connect to PostgreSQL database
+    # Use the provided connection string's components
     conn = psycopg2.connect(
-        dbname="your_db_name",  # Replace with your database name
-        user="your_db_user",    # Replace with your database username
-        password="your_db_password",  # Replace with your database password
-        host="your_db_host",  # e.g. "localhost" or "your_render_host"
-        port="5432"           # Default PostgreSQL port
+        dbname="bittatech_data",              # Database name
+        user="bittatech_data_user",           # Username
+        password="N7oibExmokOMOAhaMxXclZyRh5vyg8jp",  # Password
+        host="dpg-ctec3aaj1k6c73at5hjg-a",    # Host
+        port="5432"                           # Port
     )
     cursor = conn.cursor(cursor_factory=RealDictCursor)
 
@@ -81,7 +81,7 @@ def get_user_by_email(email):
     cursor.close()
     conn.close()
 
-    return user  # Returns the user data if found, otherwise None
+    return user
 
 def __init__(self, id, name, surname, email, password):
 
