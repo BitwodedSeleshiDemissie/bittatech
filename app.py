@@ -10,6 +10,20 @@ def hash_password(password):
 def check_password(stored_password, provided_password):
     return check_password_hash(stored_password, provided_password)
 
+def create_user(name, email, hashed_password):
+    # Connect to the SQLite database
+    conn = sqlite3.connect('your_database.db')  # Replace with your actual database file
+    cursor = conn.cursor()
+
+    # Insert the new user into the users table
+    cursor.execute("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", 
+                   (name, email, hashed_password))
+
+    # Commit the changes and close the connection
+    conn.commit()
+    conn.close()
+
+
 
 
 # Initialize Flask app
