@@ -203,12 +203,26 @@ def seo_optimization():
 @app.route('/social-media-marketing')
 def social_media_marketing():
     return render_template('social_media_marketing.html')
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        # Add user authentication logic
+        return redirect(url_for('profile'))
     return render_template('login.html')
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        hashed_password = hash_password(password)
+        # Add user registration logic (save to database)
+        return redirect(url_for('login'))
     return render_template('signup.html')
+
 
 
 @app.route('/terms')
