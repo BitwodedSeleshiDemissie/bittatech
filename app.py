@@ -5,6 +5,12 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_mail import Mail, Message
 from werkzeug.security import generate_password_hash, check_password_hash
+def hash_password(password):
+    return generate_password_hash(password)
+def check_password(stored_password, provided_password):
+    return check_password_hash(stored_password, provided_password)
+
+
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -218,10 +224,22 @@ def signup():
         name = request.form.get('name')
         email = request.form.get('email')
         password = request.form.get('password')
+
+        # Check if user already exists (you can implement this function)
+        existing_user = get_user_by_email(email)
+        if existing_user:
+            return "User already exists. Please log in."
+
+        # Hash the password before storing it
         hashed_password = hash_password(password)
-        # Add user registration logic (save to database)
-        return redirect(url_for('login'))
+
+        # Insert new user into the database (you can implement this function)
+        create_user(name, email, hashed_password)
+
+        return redirect(url_for('login'))  # Redirect to login after signup
+
     return render_template('signup.html')
+
 
 
 
