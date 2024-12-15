@@ -11,17 +11,27 @@ def check_password(stored_password, provided_password):
     return check_password_hash(stored_password, provided_password)
 
 def create_user(name, email, hashed_password):
-    # Connect to the SQLite database
-    conn = sqlite3.connect('your_database.db')  # Replace with your actual database file
+    # Connect to PostgreSQL database
+    conn = psycopg2.connect(
+        dbname="bittatech_data",  
+        user="bittatech_data_user",    
+        password="N7oibExmokOMOAhaMxXclZyRh5vyg8jp",  
+        host="dpg-ctec3aaj1k6c73at5hjg-a",  
+        port="5432"           # Default PostgreSQL port
+    )
     cursor = conn.cursor()
 
     # Insert the new user into the users table
-    cursor.execute("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", 
-                   (name, email, hashed_password))
+    cursor.execute(
+        "INSERT INTO users (name, email, password) VALUES (%s, %s, %s)",
+        (name, email, hashed_password)
+    )
 
     # Commit the changes and close the connection
     conn.commit()
+    cursor.close()
     conn.close()
+
 
 
 
