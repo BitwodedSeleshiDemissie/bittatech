@@ -19,6 +19,7 @@ app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME')  # Default sender
 
 # Initialize Flask-Mail
 mail = Mail(app)
+# The flask authentication thing that we are using is based from a flask-login library
 
 # Flask-Login configuration
 app.config['SECRET_KEY'] = 'secret'
@@ -205,9 +206,10 @@ def social_media_marketing():
 @app.route('/login')
 def login():
     return render_template('login.html')
-@app.route('/sighup')
-def sighup():
-    return render_template('sighup.html')
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    return render_template('signup.html')
+
 
 @app.route('/terms')
 def terms():
