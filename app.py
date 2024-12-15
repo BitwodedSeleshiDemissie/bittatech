@@ -1,6 +1,7 @@
 import logging
 import os
 import psycopg2
+from psycopg2.extras import RealDictCursor
 from flask import Flask, render_template, request, redirect, url_for
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_mail import Mail, Message
@@ -61,6 +62,26 @@ DATABASE_URL = 'postgresql://bittatech_data_user:N7oibExmokOMOAhaMxXclZyRh5vyg8j
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+def get_user_by_email(email):
+    # Connect to PostgreSQL database
+    conn = psycopg2.connect(
+        dbname="your_db_name",  # Replace with your database name
+        user="your_db_user",    # Replace with your database username
+        password="your_db_password",  # Replace with your database password
+        host="your_db_host",  # e.g. "localhost" or "your_render_host"
+        port="5432"           # Default PostgreSQL port
+    )
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+
+    # Query to check if a user with the given email exists
+    cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+    user = cursor.fetchone()  # Returns None if no user is found
+
+    # Close the database connection
+    cursor.close()
+    conn.close()
+
+    return user  # Returns the user data if found, otherwise None
 
 def __init__(self, id, name, surname, email, password):
 
