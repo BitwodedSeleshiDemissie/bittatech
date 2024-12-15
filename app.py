@@ -115,7 +115,7 @@ def get_db():
         raise
     
 #create user table 
-def create_users_table():
+def users():
     try:
         conn = get_db()
         cursor = conn.cursor()
