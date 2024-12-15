@@ -83,13 +83,14 @@ def get_user_by_email(email):
 
     return user
 
-def __init__(self, id, name, surname, email, password):
+class User(UserMixin):
+    def __init__(self, id, name, surname, email, password):
+        self.id = id
+        self.name = name
+        self.surname = surname
+        self.email = email
+        self.password = password
 
-    self.id = id
-    self.name = name
-    self.surname = surname
-    self.email = email
-    self.password = password
 
 
 @login_manager.user_loader
@@ -279,9 +280,15 @@ def login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        # Add user authentication logic
-        return redirect(url_for('profile'))
+        user = get_user_by_email(email)
+        if user and check_password(user['password'], password):  # Ensure password matches
+            user_obj = User(id=user['id'], name=user['name'], surname=user['surname'], email=user['email'], password=user['password'])
+            login_user(user_obj)
+            return redirect(url_for('profile'))
+        else:
+            return "Invalid credentials. Please try again."
     return render_template('login.html')
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -331,7 +338,7 @@ create_table()
 # Main entry point
 if __name__ == "__main__":
     # Create required tables
-    create_users_table()
+    create_table()
     create_messages_table()  # Renamed for clarity
     
     # Start the Flask app
