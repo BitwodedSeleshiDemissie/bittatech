@@ -182,12 +182,7 @@ def get_user_by_id(user_id):
     # Replace with actual logic to fetch user from the database
     return None
 
-# Routes
-@app.route('/set_language/<language>')
-def set_language(language):
-    if language not in ['en', 'it']:
-        language = 'en'  # Default to English if the language is not valid
-    return redirect(url_for('home', lang=language))
+
 
 @app.route('/')
 def home():
