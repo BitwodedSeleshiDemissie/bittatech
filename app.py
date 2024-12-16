@@ -1,3 +1,5 @@
+# Disclaimer 
+# This is the blueprint of the bittatech institution for the web development project. If you got access to this file, you are not allowed to use it for any commercial purposes. This is a project filled with confidential information and it is not allowed to be used for any commercial purposes. If you are interested in using this project for commercial purposes, please contact the owner of the project.
 import logging
 import os
 import psycopg2
@@ -32,8 +34,6 @@ def create_user(name, email, hashed_password):
     conn.commit()
     cursor.close()
     conn.close()
-
-
 
 
 
@@ -316,17 +316,9 @@ def signup():
         return redirect(url_for('login'))  # Redirect to login after signup
 
     return render_template('signup.html')
-
-
-
-
 @app.route('/terms')
 def terms():
     return render_template('terms.html')
-
-@app.route('/testimonial')
-def testimonial():
-    return render_template('testimonial.html')
 
 @app.route('/web-design')
 def web_design():
@@ -346,4 +338,4 @@ if __name__ == "__main__":
     create_table()  # Renamed for clarity
     # Start the Flask app
     app.run(debug=True)
-    
+
