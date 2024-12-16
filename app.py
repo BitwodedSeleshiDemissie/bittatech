@@ -13,32 +13,24 @@ def hash_password(password):
 def check_password(stored_password, provided_password):
     return check_password_hash(stored_password, provided_password)
 
-def create_user(name, email, hashed_password):
-    # Connect to PostgreSQL database
-    conn = psycopg2.connect(
-        dbname="bittatech_data",  
-        user="bittatech_data_user",    
-        password="N7oibExmokOMOAhaMxXclZyRh5vyg8jp",  
-        host="dpg-ctec3aaj1k6c73at5hjg-a",  
-        port="5432"           # Default PostgreSQL port
-    )
-    cursor = conn.cursor()
-
-    # Insert the new user into the users table
-    cursor.execute(
-        "INSERT INTO users (name, email, password) VALUES (%s, %s, %s)",
-        (name, email, hashed_password)
-    )
-
-    # Commit the changes and close the connection
-    conn.commit()
-    cursor.close()
-    conn.close()
-
-
 
 # Initialize Flask app
+
 app = Flask(__name__)
+# Set the default language to English
+app.config['BABEL_DEFAULT_LOCALE'] = 'en'
+app.config['BABEL_SUPPORTED_LOCALES'] = ['en', 'it']  # English and Italian
+
+babel = Babel(app)
+
+# Language selection function
+@babel.localeselector
+def get_locale():
+    # Check for the 'lang' query parameter in the URL, otherwise fall back to the default language
+    lang = request.args.get('lang')
+    if lang:
+        return lang
+    return request.accept_languages.best_match(app.config['BABEL_SUPPORTED_LOCALES'])
 
 # Flask-Mail configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -90,6 +82,31 @@ class User(UserMixin):
         self.surname = surname
         self.email = email
         self.password = password
+
+def create_user(name, email, hashed_password):
+    # Connect to PostgreSQL database
+    conn = psycopg2.connect(
+        dbname="bittatech_data",  
+        user="bittatech_data_user",    
+        password="N7oibExmokOMOAhaMxXclZyRh5vyg8jp",  
+        host="dpg-ctec3aaj1k6c73at5hjg-a",  
+        port="5432"           # Default PostgreSQL port
+    )
+    cursor = conn.cursor()
+
+    # Insert the new user into the users table
+    cursor.execute(
+        "INSERT INTO users (name, email, password) VALUES (%s, %s, %s)",
+        (name, email, hashed_password)
+    )
+
+    # Commit the changes and close the connection
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
+
 
 
 
@@ -182,6 +199,12 @@ def get_user_by_id(user_id):
     return None
 
 # Routes
+@app.route('/set_language/<language>')
+def set_language(language):
+    if language not in ['en', 'it']:
+        language = 'en'  # Default to English if the language is not valid
+    return redirect(url_for('index', lang=language))
+
 @app.route('/')
 def home():
     return render_template('index.html')

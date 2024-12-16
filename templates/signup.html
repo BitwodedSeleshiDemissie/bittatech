@@ -60,6 +60,14 @@
                         <a href="{{ url_for('pricing') }}" class="nav-item nav-link">Pricing</a>
                         <a href="{{ url_for('contact') }}" class="nav-item nav-link">Contact</a>
                     </div>
+                    <div class="d-flex align-items-center me-3">
+                        <a href="{{ url_for('set_language', language='en') }}">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_England.svg" alt="English" width="30">
+                        </a>
+                        <a href="{{ url_for('set_language', language='it') }}">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/0/03/Flag_of_Italy.svg" alt="Italian" width="30">
+                        </a>
+                    </div>
     
                 </div>
             </nav>
