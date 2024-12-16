@@ -343,8 +343,7 @@ create_table()
 # Main entry point
 if __name__ == "__main__":
     # Create required tables
-    create_table()
-    create_messages_table()  # Renamed for clarity
-    
+    create_table()  # Renamed for clarity
     # Start the Flask app
     app.run(debug=True)
+    
