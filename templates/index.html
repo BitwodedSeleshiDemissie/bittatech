@@ -68,8 +68,7 @@
                     <!-- Language Switcher (Icons) -->
                 <div class="d-flex align-items-center me-3">
                     <a href="{{ url_for('set_language', language='en') }}">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_England.svg" alt="English" width="30">
-                    </a>
+                    <img src="{{ url_for('static', filename='img/uk.jpg') }}" alt="English" width="30">                    </a>
                     <a href="{{ url_for('set_language', language='it') }}">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/0/03/Flag_of_Italy.svg" alt="Italian" width="30">
                     </a>

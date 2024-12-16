@@ -187,7 +187,7 @@ def get_user_by_id(user_id):
 def set_language(language):
     if language not in ['en', 'it']:
         language = 'en'  # Default to English if the language is not valid
-    return redirect(url_for('index', lang=language))
+    return redirect(url_for('home', lang=language))
 
 @app.route('/')
 def home():
