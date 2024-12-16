@@ -1,7 +1,7 @@
 (function ($) {
     "use strict";
 
-    // Spinner
+    // Spinner functionality
     var spinner = function () {
         setTimeout(function () {
             if ($('#spinner').length > 0) {
@@ -11,10 +11,10 @@
     };
     spinner();
 
-    // Initiate the wowjs
+    // Initiate the wowjs animation library
     new WOW().init();
 
-    // Sticky Navbar
+    // Sticky Navbar functionality
     $(window).scroll(function () {
         if ($(this).scrollTop() > 45) {
             $('.navbar').addClass('sticky-top shadow-sm');
@@ -23,7 +23,7 @@
         }
     });
 
-    // Back to top button
+    // Back to top button functionality
     $(window).scroll(function () {
         if ($(this).scrollTop() > 100) {
             $('.back-to-top').fadeIn('slow');
@@ -36,42 +36,38 @@
         return false;
     });
 
-    // Skills
+    // Skills progress bar animation
     $('.skill').waypoint(function () {
         $('.progress .progress-bar').each(function () {
             $(this).css("width", $(this).attr("aria-valuenow") + '%');
         });
     }, {offset: '80%'});
 
-    // Facts counter
+    // Facts counter animation
     $('[data-toggle="counter-up"]').counterUp({
         delay: 10,
         time: 2000
     });
 
-    // Testimonials carousel
+    // Testimonials carousel functionality
     $(".testimonial-carousel").owlCarousel({
         autoplay: true,
         smartSpeed: 1000,
         margin: 25,
         dots: false,
         loop: true,
-        nav : true,
-        navText : [
+        nav: true,
+        navText: [
             '<i class="bi bi-chevron-left"></i>',
             '<i class="bi bi-chevron-right"></i>'
         ],
         responsive: {
-            0:{
-                items:1
-            },
-            992:{
-                items:2
-            }
+            0: { items: 1 },
+            992: { items: 2 }
         }
     });
 
-    // Portfolio isotope and filter
+    // Portfolio isotope and filter functionality
     var portfolioIsotope = $('.portfolio-container').isotope({
         itemSelector: '.portfolio-item',
         layoutMode: 'fitRows'
@@ -84,11 +80,11 @@
 
     // Function to translate text using LibreTranslate API
     function translateTextLibre(text, targetLanguage) {
-        const url = 'https://libretranslate.de/translate';  // Public instance URL of LibreTranslate
+        const url = 'https://libretranslate.de/translate';  // Public instance of LibreTranslate
         const data = {
             q: text,
             source: 'en',  // Default source language (English)
-            target: targetLanguage  // Dynamic target language
+            target: targetLanguage  // Dynamic target language (could be 'en', 'it', etc.)
         };
 
         return fetch(url, {
@@ -97,38 +93,43 @@
             body: JSON.stringify(data)
         })
         .then(response => response.json())
-        .then(data => {
-            return data.translatedText;
-        })
+        .then(data => data.translatedText)
         .catch(error => console.error('Error with LibreTranslate API:', error));
     }
 
-    // Function to load and translate page content dynamically
+    // Function to dynamically translate page content (text nodes and attributes)
     function loadTranslation(language) {
-        // Select all text nodes that are not inside any element with specific classes
+        // Loop through each element's text content
         $('body').find('*').contents().each(function() {
             if (this.nodeType === 3 && this.textContent.trim() !== '') {  // Check for text nodes
                 const originalText = this.textContent.trim();
                 translateTextLibre(originalText, language).then(translatedText => {
-                    this.textContent = translatedText;  // Replace the text content with the translation
+                    this.textContent = translatedText;  // Update text content with the translated text
+                });
+            }
+        });
+
+        // Translate 'alt' and 'title' attributes for accessibility
+        $('body').find('[alt], [title]').each(function() {
+            const element = $(this);
+            const attributeName = element.is('[alt]') ? 'alt' : 'title';
+            const originalText = element.attr(attributeName);
+            if (originalText && originalText.trim() !== '') {
+                translateTextLibre(originalText, language).then(translatedText => {
+                    element.attr(attributeName, translatedText);  // Update attribute with translated text
                 });
             }
         });
     }
 
-    // Event listeners for language change (for flags)
-    // For the English flag
-    document.querySelector('[href*="language=en"]').addEventListener('click', function (event) {
-        event.preventDefault();  // Prevent the default behavior
-        loadTranslation('en');   // Load English translations
+    // Event listeners for language switcher icons
+    $('.language-switcher').on('click', function (event) {
+        event.preventDefault();  // Prevent default behavior (navigation)
+        const language = $(this).data('language');  // Get the language from the data attribute
+        loadTranslation(language);   // Load translations based on the selected language
     });
 
-    // For the Italian flag
-    document.querySelector('[href*="language=it"]').addEventListener('click', function (event) {
-        event.preventDefault();  // Prevent the default behavior
-        loadTranslation('it');   // Load Italian translations
-    });
+    // Initial translation (optional, can be removed if you want to manually control it)
+    loadTranslation('en');  // Default translation to English on page load
 
-    // Example: Initial translation for English (optional)
-    loadTranslation('en');
 })(jQuery);
