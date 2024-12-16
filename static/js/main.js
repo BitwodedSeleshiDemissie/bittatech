@@ -1,7 +1,7 @@
 (function ($) {
     "use strict";
 
-    // Spinner functionality
+    // Spinner - Hide it after page load
     var spinner = function () {
         setTimeout(function () {
             if ($('#spinner').length > 0) {
@@ -11,10 +11,10 @@
     };
     spinner();
 
-    // Initiate the wowjs animation library
+    // Initiate the wowjs (animation on scroll)
     new WOW().init();
 
-    // Sticky Navbar functionality
+    // Sticky Navbar - Add class on scroll
     $(window).scroll(function () {
         if ($(this).scrollTop() > 45) {
             $('.navbar').addClass('sticky-top shadow-sm');
@@ -36,20 +36,20 @@
         return false;
     });
 
-    // Skills progress bar animation
+    // Skills Progress Bars - Animate on scroll
     $('.skill').waypoint(function () {
         $('.progress .progress-bar').each(function () {
             $(this).css("width", $(this).attr("aria-valuenow") + '%');
         });
     }, {offset: '80%'});
 
-    // Facts counter animation
+    // Counter-Up for number increment
     $('[data-toggle="counter-up"]').counterUp({
         delay: 10,
         time: 2000
     });
 
-    // Testimonials carousel functionality
+    // Testimonials carousel using OwlCarousel
     $(".testimonial-carousel").owlCarousel({
         autoplay: true,
         smartSpeed: 1000,
@@ -67,7 +67,7 @@
         }
     });
 
-    // Portfolio isotope and filter functionality
+    // Portfolio isotope and filter (filter items)
     var portfolioIsotope = $('.portfolio-container').isotope({
         itemSelector: '.portfolio-item',
         layoutMode: 'fitRows'
@@ -75,7 +75,7 @@
     $('#portfolio-flters li').on('click', function () {
         $("#portfolio-flters li").removeClass('active');
         $(this).addClass('active');
-        portfolioIsotope.isotope({filter: $(this).data('filter')});
+        portfolioIsotope.isotope({ filter: $(this).data('filter') });
     });
 
     // Function to translate text using LibreTranslate API
@@ -84,7 +84,7 @@
         const data = {
             q: text,
             source: 'en',  // Default source language (English)
-            target: targetLanguage  // Dynamic target language (could be 'en', 'it', etc.)
+            target: targetLanguage  // Target language, e.g., 'it' for Italian
         };
 
         return fetch(url, {
@@ -97,39 +97,39 @@
         .catch(error => console.error('Error with LibreTranslate API:', error));
     }
 
-    // Function to dynamically translate page content (text nodes and attributes)
+    // Function to load and translate page content dynamically
     function loadTranslation(language) {
-        // Loop through each element's text content
+        // Loop through each text node in the body
         $('body').find('*').contents().each(function() {
             if (this.nodeType === 3 && this.textContent.trim() !== '') {  // Check for text nodes
                 const originalText = this.textContent.trim();
                 translateTextLibre(originalText, language).then(translatedText => {
-                    this.textContent = translatedText;  // Update text content with the translated text
+                    this.textContent = translatedText;  // Update text content with translation
                 });
             }
         });
 
-        // Translate 'alt' and 'title' attributes for accessibility
+        // Translate 'alt' and 'title' attributes for images and links
         $('body').find('[alt], [title]').each(function() {
             const element = $(this);
             const attributeName = element.is('[alt]') ? 'alt' : 'title';
             const originalText = element.attr(attributeName);
             if (originalText && originalText.trim() !== '') {
                 translateTextLibre(originalText, language).then(translatedText => {
-                    element.attr(attributeName, translatedText);  // Update attribute with translated text
+                    element.attr(attributeName, translatedText);  // Update the attribute with translated text
                 });
             }
         });
     }
 
-    // Event listeners for language switcher icons
+    // Event listener for language switcher - triggered when a flag is clicked
     $('.language-switcher').on('click', function (event) {
-        event.preventDefault();  // Prevent default behavior (navigation)
-        const language = $(this).data('language');  // Get the language from the data attribute
-        loadTranslation(language);   // Load translations based on the selected language
+        event.preventDefault();  // Prevent default navigation
+        const language = $(this).data('language');  // Get the selected language (from data attribute)
+        console.log(`Language selected: ${language}`);  // Debugging log for selected language
+        loadTranslation(language);  // Load translations for the selected language
     });
 
-    // Initial translation (optional, can be removed if you want to manually control it)
-    loadTranslation('en');  // Default translation to English on page load
-
+    // Initialize with default language (e.g., English) on page load
+    loadTranslation('en');
 })(jQuery);
