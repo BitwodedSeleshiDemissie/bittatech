@@ -132,4 +132,5 @@
 
     // Initialize with default language (e.g., English) on page load
     loadTranslation('en');
+
 })(jQuery);
