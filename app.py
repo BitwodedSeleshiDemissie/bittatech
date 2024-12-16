@@ -4,7 +4,6 @@ import logging
 import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
-from flask_babel import Babel, _
 from flask import Flask, render_template, request, redirect, url_for,session
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_mail import Mail, Message
@@ -18,21 +17,6 @@ def check_password(stored_password, provided_password):
 # Initialize Flask app
 
 app = Flask(__name__)
-# Set the default language to English
-app.config['BABEL_DEFAULT_LOCALE'] = 'en'
-app.config['BABEL_SUPPORTED_LOCALES'] = ['en', 'it']  # English and Italian
-
-babel = Babel(app)
-
-# Language selection function
-@babel.localeselector
-def get_locale():
-    # Check for the 'lang' query parameter in the URL, otherwise fall back to the default language
-    lang = request.args.get('lang')
-    if lang:
-        return lang
-    return request.accept_languages.best_match(app.config['BABEL_SUPPORTED_LOCALES'])
-
 # Flask-Mail configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465  # SSL port for Gmail
