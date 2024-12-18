@@ -1,7 +1,6 @@
 (function ($) {
     "use strict";
 
-    // Spinner - Hide it after page load
     var spinner = function () {
         setTimeout(function () {
             if ($('#spinner').length > 0) {
@@ -11,10 +10,8 @@
     };
     spinner();
 
-    // Initiate the wowjs (animation on scroll)
     new WOW().init();
 
-    // Sticky Navbar - Add class on scroll
     $(window).scroll(function () {
         if ($(this).scrollTop() > 45) {
             $('.navbar').addClass('sticky-top shadow-sm');
@@ -23,7 +20,6 @@
         }
     });
 
-    // Back to top button functionality
     $(window).scroll(function () {
         if ($(this).scrollTop() > 100) {
             $('.back-to-top').fadeIn('slow');
@@ -36,20 +32,17 @@
         return false;
     });
 
-    // Skills Progress Bars - Animate on scroll
     $('.skill').waypoint(function () {
         $('.progress .progress-bar').each(function () {
             $(this).css("width", $(this).attr("aria-valuenow") + '%');
         });
     }, {offset: '80%'});
 
-    // Counter-Up for number increment
     $('[data-toggle="counter-up"]').counterUp({
         delay: 10,
         time: 2000
     });
 
-    // Testimonials carousel using OwlCarousel
     $(".testimonial-carousel").owlCarousel({
         autoplay: true,
         smartSpeed: 1000,
@@ -67,7 +60,6 @@
         }
     });
 
-    // Portfolio isotope and filter (filter items)
     var portfolioIsotope = $('.portfolio-container').isotope({
         itemSelector: '.portfolio-item',
         layoutMode: 'fitRows'
@@ -78,96 +70,62 @@
         portfolioIsotope.isotope({ filter: $(this).data('filter') });
     });
 
-   // Function to translate text using Azure Cognitive Translation API
-function translateTextAzure(text, targetLanguage) {
-    const url = 'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0';
-    const region = 'italynorth';  // Your region: 'italynorth'
-    const subscriptionKey = '4Q40w3KM8TuqK8LJ0ataejTWkZnJWu6sBeGTTAIhqbggvLusmqB5JQQJ99ALACgEuAYXJ3w3AAAbACOGkm8d';  // Use Key 1
+    function translateTextAzure(text, targetLanguage) {
+        const url = 'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0';
+        const region = 'italynorth';
+        const subscriptionKey = '4Q40w3KM8TuqK8LJ0ataejTWkZnJWu6sBeGTTAIhqbggvLusmqB5JQQJ99ALACgEuAYXJ3w3AAAbACOGkm8d';
 
-    const headers = {
-        'Ocp-Apim-Subscription-Key': subscriptionKey,
-        'Content-Type': 'application/json',
-    };
+        const headers = {
+            'Ocp-Apim-Subscription-Key': subscriptionKey,
+            'Content-Type': 'application/json',
+            'Ocp-Apim-Subscription-Region': region
+        };
 
-    const body = [{
-        Text: text,
-    }];
+        const body = [{
+            Text: text,
+        }];
 
-    const params = new URLSearchParams({
-        'to': targetLanguage,  // Target language code (e.g., 'it' for Italian)
+        const params = new URLSearchParams({
+            'to': targetLanguage,
+        });
+
+        return fetch(`${url}&${params.toString()}`, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(body),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error with API response: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data && data[0] && data[0].translations[0]) {
+                return data[0].translations[0].text;
+            } else {
+                console.error('Translation error:', data);
+                return text;
+            }
+        })
+        .catch(error => {
+            console.error('Error with Azure Translation API:', error);
+            return text;
+        });
+    }
+
+    function translatePageContent(language) {
+        $('.translate').each(function () {
+            const originalText = $(this).text();
+            translateTextAzure(originalText, language).then(translatedText => {
+                $(this).text(translatedText);
+            });
+        });
+    }
+
+    $('.language-flag').on('click', function () {
+        const language = $(this).data('language');
+        translatePageContent(language);
     });
-
-    return fetch(`${url}&${params.toString()}`, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(body),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data[0] && data[0].translations[0]) {
-            return data[0].translations[0].text;  // Get translated text
-        } else {
-            console.error('Translation error:', data);
-            return text;  // Fallback to original text
-        }
-    })
-    .catch(error => {
-        console.error('Error with Azure Translation API:', error);
-        return text;  // Fallback to original text
-    });
-}
-
-// Function to translate text using Azure Cognitive Translation API
-function translateTextAzure(text, targetLanguage) {
-    const url = 'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0';  // Correct API endpoint
-    const region = 'italynorth';  // Your region
-    const subscriptionKey = '4Q40w3KM8TuqK8LJ0ataejTWkZnJWu6sBeGTTAIhqbggvLusmqB5JQQJ99ALACgEuAYXJ3w3AAAbACOGkm8d';  // Use Key 1
-
-    // Set headers with subscription key and region
-    const headers = {
-        'Ocp-Apim-Subscription-Key': subscriptionKey,
-        'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Region': region  // Include region here
-    };
-
-    // Body to send the text to be translated
-    const body = [{
-        Text: text,
-    }];
-
-    // Set the parameters for translation (target language)
-    const params = new URLSearchParams({
-        'to': targetLanguage,  // Target language code (e.g., 'it' for Italian)
-    });
-
-    // Send the POST request
-    return fetch(`${url}&${params.toString()}`, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(body),
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Error with API response: ${response.statusText}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data && data[0] && data[0].translations[0]) {
-            return data[0].translations[0].text;  // Extract the translated text
-        } else {
-            console.error('Translation error:', data);
-            return text;  // Fallback to original text
-        }
-    })
-    .catch(error => {
-        console.error('Error with Azure Translation API:', error);
-        return text;  // Fallback to original text
-    });
-}
-
-
-    // Initialize with default language (e.g., English) on page load
-    loadTranslation('en');
 
 })(jQuery);
