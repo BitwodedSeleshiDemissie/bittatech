@@ -78,57 +78,59 @@
         portfolioIsotope.isotope({ filter: $(this).data('filter') });
     });
 
-    // Function to translate text using LibreTranslate API
-    function translateTextLibre(text, targetLanguage) {
-        const url = 'https://libretranslate.de/translate';  // Public instance of LibreTranslate
-        const data = {
-            q: text,
-            source: 'en',  // Default source language (English)
-            target: targetLanguage  // Target language, e.g., 'it' for Italian
-        };
+   // Function to translate text using MyMemory API
+   function translateTextMyMemory(text, targetLanguage) {
+    const url = 'https://api.mymemory.translated.net/get';
+    const langPair = targetLanguage === 'it' ? 'en|it' : 'it|en'; // Toggle between English and Italian
 
-        return fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
+    return fetch(`${url}?q=${encodeURIComponent(text)}&langpair=${langPair}&key=1e18da3c8bf6501651a6`)
         .then(response => response.json())
-        .then(data => data.translatedText)
-        .catch(error => console.error('Error with LibreTranslate API:', error));
-    }
-
-    // Function to load and translate page content dynamically
-    function loadTranslation(language) {
-        // Loop through each text node in the body
-        $('body').find('*').contents().each(function() {
-            if (this.nodeType === 3 && this.textContent.trim() !== '') {  // Check for text nodes
-                const originalText = this.textContent.trim();
-                translateTextLibre(originalText, language).then(translatedText => {
-                    this.textContent = translatedText;  // Update text content with translation
-                });
+        .then(data => {
+            if (data.responseData) {
+                return data.responseData.translatedText;
+            } else {
+                console.error('Translation error:', data);
+                return text; // Fallback to original text
             }
+        })
+        .catch(error => {
+            console.error('Error with MyMemory API:', error);
+            return text; // Fallback to original text
         });
+}
 
-        // Translate 'alt' and 'title' attributes for images and links
-        $('body').find('[alt], [title]').each(function() {
-            const element = $(this);
-            const attributeName = element.is('[alt]') ? 'alt' : 'title';
-            const originalText = element.attr(attributeName);
-            if (originalText && originalText.trim() !== '') {
-                translateTextLibre(originalText, language).then(translatedText => {
-                    element.attr(attributeName, translatedText);  // Update the attribute with translated text
-                });
-            }
-        });
-    }
-
-    // Event listener for language switcher - triggered when a flag is clicked
-    $('.language-switcher').on('click', function (event) {
-        event.preventDefault();  // Prevent default navigation
-        const language = $(this).data('language');  // Get the selected language (from data attribute)
-        console.log(`Language selected: ${language}`);  // Debugging log for selected language
-        loadTranslation(language);  // Load translations for the selected language
+// Function to load and translate page content dynamically
+function loadTranslation(language) {
+    // Loop through each text node in the body
+    $('body').find('*').contents().each(function () {
+        if (this.nodeType === 3 && this.textContent.trim() !== '') {  // Check for text nodes
+            const originalText = this.textContent.trim();
+            translateTextMyMemory(originalText, language).then(translatedText => {
+                this.textContent = translatedText;  // Update text content with translation
+            });
+        }
     });
+
+    // Translate 'alt' and 'title' attributes for images and links
+    $('body').find('[alt], [title]').each(function () {
+        const element = $(this);
+        const attributeName = element.is('[alt]') ? 'alt' : 'title';
+        const originalText = element.attr(attributeName);
+        if (originalText && originalText.trim() !== '') {
+            translateTextMyMemory(originalText, language).then(translatedText => {
+                element.attr(attributeName, translatedText);  // Update the attribute with translated text
+            });
+        }
+    });
+}
+
+// Event listener for language switcher - triggered when a flag is clicked
+$('.language-switcher').on('click', function (event) {
+    event.preventDefault();  // Prevent default navigation
+    const language = $(this).data('language');  // Get the selected language (from data attribute)
+    console.log(`Language selected: ${language}`);  // Debugging log for selected language
+    loadTranslation(language);  // Load translations for the selected language
+});
 
     // Initialize with default language (e.g., English) on page load
     loadTranslation('en');
