@@ -117,38 +117,55 @@ function translateTextAzure(text, targetLanguage) {
     });
 }
 
-// Function to load and translate page content dynamically
-function loadTranslation(language) {
-    // Loop through each text node in the body
-    $('body').find('*').contents().each(function () {
-        if (this.nodeType === 3 && this.textContent.trim() !== '') {  // Check for text nodes
-            const originalText = this.textContent.trim();
-            translateTextAzure(originalText, language).then(translatedText => {
-                this.textContent = translatedText;  // Update text content with translation
-            });
-        }
+// Function to translate text using Azure Cognitive Translation API
+function translateTextAzure(text, targetLanguage) {
+    const url = 'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0';  // Correct API endpoint
+    const region = 'italynorth';  // Your region
+    const subscriptionKey = '4Q40w3KM8TuqK8LJ0ataejTWkZnJWu6sBeGTTAIhqbggvLusmqB5JQQJ99ALACgEuAYXJ3w3AAAbACOGkm8d';  // Use Key 1
+
+    // Set headers with subscription key and region
+    const headers = {
+        'Ocp-Apim-Subscription-Key': subscriptionKey,
+        'Content-Type': 'application/json',
+        'Ocp-Apim-Subscription-Region': region  // Include region here
+    };
+
+    // Body to send the text to be translated
+    const body = [{
+        Text: text,
+    }];
+
+    // Set the parameters for translation (target language)
+    const params = new URLSearchParams({
+        'to': targetLanguage,  // Target language code (e.g., 'it' for Italian)
     });
 
-    // Translate 'alt' and 'title' attributes for images and links
-    $('body').find('[alt], [title]').each(function () {
-        const element = $(this);
-        const attributeName = element.is('[alt]') ? 'alt' : 'title';
-        const originalText = element.attr(attributeName);
-        if (originalText && originalText.trim() !== '') {
-            translateTextAzure(originalText, language).then(translatedText => {
-                element.attr(attributeName, translatedText);  // Update the attribute with translated text
-            });
+    // Send the POST request
+    return fetch(`${url}&${params.toString()}`, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(body),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Error with API response: ${response.statusText}`);
         }
+        return response.json();
+    })
+    .then(data => {
+        if (data && data[0] && data[0].translations[0]) {
+            return data[0].translations[0].text;  // Extract the translated text
+        } else {
+            console.error('Translation error:', data);
+            return text;  // Fallback to original text
+        }
+    })
+    .catch(error => {
+        console.error('Error with Azure Translation API:', error);
+        return text;  // Fallback to original text
     });
 }
 
-// Event listener for language switcher - triggered when a flag is clicked
-$('.language-switcher').on('click', function (event) {
-    event.preventDefault();  // Prevent default navigation
-    const language = $(this).data('language');  // Get the selected language (from data attribute)
-    console.log(`Language selected: ${language}`);  // Debugging log for selected language
-    loadTranslation(language);  // Load translations for the selected language
-});
 
     // Initialize with default language (e.g., English) on page load
     loadTranslation('en');
