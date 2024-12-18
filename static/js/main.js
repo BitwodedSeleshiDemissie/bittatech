@@ -78,25 +78,43 @@
         portfolioIsotope.isotope({ filter: $(this).data('filter') });
     });
 
-   // Function to translate text using MyMemory API
-   function translateTextMyMemory(text, targetLanguage) {
-    const url = 'https://api.mymemory.translated.net/get';
-    const langPair = targetLanguage === 'it' ? 'en|it' : 'it|en'; // Toggle between English and Italian
+   // Function to translate text using Azure Cognitive Translation API
+function translateTextAzure(text, targetLanguage) {
+    const url = 'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0';
+    const region = 'italynorth';  // Your region: 'italynorth'
+    const subscriptionKey = '4Q40w3KM8TuqK8LJ0ataejTWkZnJWu6sBeGTTAIhqbggvLusmqB5JQQJ99ALACgEuAYXJ3w3AAAbACOGkm8d';  // Use Key 1
 
-    return fetch(`${url}?q=${encodeURIComponent(text)}&langpair=${langPair}&key=1e18da3c8bf6501651a6`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.responseData) {
-                return data.responseData.translatedText;
-            } else {
-                console.error('Translation error:', data);
-                return text; // Fallback to original text
-            }
-        })
-        .catch(error => {
-            console.error('Error with MyMemory API:', error);
-            return text; // Fallback to original text
-        });
+    const headers = {
+        'Ocp-Apim-Subscription-Key': subscriptionKey,
+        'Content-Type': 'application/json',
+    };
+
+    const body = [{
+        Text: text,
+    }];
+
+    const params = new URLSearchParams({
+        'to': targetLanguage,  // Target language code (e.g., 'it' for Italian)
+    });
+
+    return fetch(`${url}&${params.toString()}`, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(body),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data[0] && data[0].translations[0]) {
+            return data[0].translations[0].text;  // Get translated text
+        } else {
+            console.error('Translation error:', data);
+            return text;  // Fallback to original text
+        }
+    })
+    .catch(error => {
+        console.error('Error with Azure Translation API:', error);
+        return text;  // Fallback to original text
+    });
 }
 
 // Function to load and translate page content dynamically
@@ -105,7 +123,7 @@ function loadTranslation(language) {
     $('body').find('*').contents().each(function () {
         if (this.nodeType === 3 && this.textContent.trim() !== '') {  // Check for text nodes
             const originalText = this.textContent.trim();
-            translateTextMyMemory(originalText, language).then(translatedText => {
+            translateTextAzure(originalText, language).then(translatedText => {
                 this.textContent = translatedText;  // Update text content with translation
             });
         }
@@ -117,7 +135,7 @@ function loadTranslation(language) {
         const attributeName = element.is('[alt]') ? 'alt' : 'title';
         const originalText = element.attr(attributeName);
         if (originalText && originalText.trim() !== '') {
-            translateTextMyMemory(originalText, language).then(translatedText => {
+            translateTextAzure(originalText, language).then(translatedText => {
                 element.attr(attributeName, translatedText);  // Update the attribute with translated text
             });
         }
