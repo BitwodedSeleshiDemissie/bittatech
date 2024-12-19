@@ -45,7 +45,7 @@ def get_user_by_email(email):
         dbname="bittatech_data",              # Database name
         user="bittatech_data_user",           # Username
         password="N7oibExmokOMOAhaMxXclZyRh5vyg8jp",  # Password
-        host="dpg-ctec3aaj1k6c73at5hjg-a",    # Host
+        host="dpg-ctec3aaj1k6c73at5hjg-a.frankfurt-postgres.render.com",    # Host
         port="5432"                           # Port
     )
     cursor = conn.cursor(cursor_factory=RealDictCursor)
@@ -74,7 +74,7 @@ def create_user(name, email, hashed_password):
         dbname="bittatech_data",  
         user="bittatech_data_user",    
         password="N7oibExmokOMOAhaMxXclZyRh5vyg8jp",  
-        host="dpg-ctec3aaj1k6c73at5hjg-a",  
+        host="dpg-ctec3aaj1k6c73at5hjg-a.frankfurt-postgres.render.com",  
         port="5432"           # Default PostgreSQL port
     )
     cursor = conn.cursor()

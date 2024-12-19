@@ -96,6 +96,7 @@
         })
         .then(response => {
             if (!response.ok) {
+                console.error(`Error with API response: ${response.statusText}`);
                 throw new Error(`Error with API response: ${response.statusText}`);
             }
             return response.json();
@@ -123,7 +124,9 @@
         });
     }
 
-    $('.language-flag').on('click', function () {
+    // Event listener for language switcher
+    $('.language-switcher').click(function (e) {
+        e.preventDefault();
         const language = $(this).data('language');
         translatePageContent(language);
     });
