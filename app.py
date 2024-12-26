@@ -1,8 +1,10 @@
-# Disclaimer 
-# This is the blueprint of the bittatech institution for the web development project. If you got access to this file, you are not allowed to use it for any commercial purposes. This is a project filled with confidential information and it is not allowed to be used for any commercial purposes. If you are interested in using this project for commercial purposes, please contact the owner of the project.
+# ********************************************Disclaimer**************************************************************# 
+# This is the blueprint of the bittatech institution for the web development project. If you got access to this file, 
+# you are not allowed to use it for any commercial purposes. This is a project filled with confidential information and 
+# it is not allowed to be used for any commercial purposes. If you are interested in using this project for commercial
+#  purposes, please contact the owner of the project.
 import logging
 import os
-import psycopg2
 from psycopg2.extras import RealDictCursor
 from flask import Flask, render_template, request, redirect, url_for
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
@@ -29,6 +31,7 @@ app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME')  # Default sender
 mail = Mail(app)
 # The flask authentication thing that we are using is based from a flask-login library
 
+    
 # Flask-Login configuration
 app.config['SECRET_KEY'] = 'secret'
 login_manager = LoginManager()
@@ -59,6 +62,7 @@ def get_user_by_email(email):
     conn.close()
 
     return user
+    #*************************** this doesn't include the user specfic dat athat should be assigned in the order of importance 
 
 class User(UserMixin):
     def __init__(self, id, name, surname, email, password):

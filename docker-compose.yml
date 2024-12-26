@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: bittatech_data_user
+      POSTGRES_PASSWORD: N7oibExmokOMOAhaMxXclZyRh5vyg8jp
+      POSTGRES_DB: bittatech_data
+    ports:
+      - "5432:5432"
+    volumes:
+      - bittatech_pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    environment:
+      DATABASE_URL: postgres://bittatech_data_user:N7oibExmokOMOAhaMxXclZyRh5vyg8jp@db:5432/bittatech_data
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+
+volumes:
+  bittatech_pgdata:

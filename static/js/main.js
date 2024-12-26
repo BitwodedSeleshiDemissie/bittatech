@@ -72,13 +72,13 @@
 
     function translateTextAzure(text, targetLanguage) {
         const url = 'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0';
-        const region = 'italynorth';
+        const region = 'italynorth';  // Correct region name
         const subscriptionKey = '4Q40w3KM8TuqK8LJ0ataejTWkZnJWu6sBeGTTAIhqbggvLusmqB5JQQJ99ALACgEuAYXJ3w3AAAbACOGkm8d';
 
         const headers = {
             'Ocp-Apim-Subscription-Key': subscriptionKey,
             'Content-Type': 'application/json',
-            'Ocp-Apim-Subscription-Region': region
+            'Ocp-Apim-Subscription-Region': italynorth
         };
 
         const body = [{
