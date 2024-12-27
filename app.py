@@ -5,6 +5,7 @@
 #  purposes, please contact the owner of the project.
 import logging
 import os
+import psycopg2
 from psycopg2.extras import RealDictCursor
 from flask import Flask, render_template, request, redirect, url_for
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
@@ -38,21 +39,26 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 # Database URL
-DATABASE_URL = 'postgresql://bittatech_data_user:N7oibExmokOMOAhaMxXclZyRh5vyg8jp@dpg-ctec3aaj1k6c73at5hjg-a/bittatech_data'
+DATABASE_URL = 'postgresql://bittatech_data_user:N7oibExmokOMOAhaMxXclZyRh5vyg8jp@dpg-ctec3aaj1k6c73at5hjg-a.frankfurt-postgres.render.com/bittatech_data'
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+import psycopg2
+from psycopg2.extras import RealDictCursor
+
 def get_user_by_email(email):
-    # Use the provided connection string's components
+    # Connection details
     conn = psycopg2.connect(
         dbname="bittatech_data",              # Database name
         user="bittatech_data_user",           # Username
         password="N7oibExmokOMOAhaMxXclZyRh5vyg8jp",  # Password
-        host="dpg-ctec3aaj1k6c73at5hjg-a.frankfurt-postgres.render.com",    # Host
+        host="dpg-ctec3aaj1k6c73at5hjg-a.frankfurt-postgres.render.com",  # Host (hostname only)
         port="5432"                           # Port
     )
+    
+    # Using a RealDictCursor to return results as a dictionary
     cursor = conn.cursor(cursor_factory=RealDictCursor)
-
+    
     # Query to check if a user with the given email exists
     cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
     user = cursor.fetchone()  # Returns None if no user is found
@@ -62,6 +68,7 @@ def get_user_by_email(email):
     conn.close()
 
     return user
+
     #*************************** this doesn't include the user specfic dat athat should be assigned in the order of importance 
 
 class User(UserMixin):
