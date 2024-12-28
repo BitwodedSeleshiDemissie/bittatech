@@ -86,45 +86,47 @@
         <!-- Navbar & Hero End -->
 
         <!-- Sign Up Form Start -->
-        <div class="container py-5">
-            <div class="row justify-content-center">
-                <div class="col-12 col-md-6">
-                    <div class="card shadow border-0">
-                        <div class="card-body p-5">
-                            <form action="#" method="post">
-                                <div class="mb-3">
-                                    <label for="username" class="form-label">Username</label>
-                                    <input type="text" class="form-control" id="username" placeholder="Enter your username" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="phone" class="form-label">Phone</label>
-                                    <input type="text" class="form-control" id="phone" placeholder="Enter your phone number" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="confirmPassword" class="form-label">Confirm Password</label>
-                                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" required>
-                                </div>
-                                <div class="mb-3">
-                                    <button type="submit" class="btn btn-primary w-100">Sign Up</button>
-                                </div>
-                            </form>
-                            <div class="text-center mt-3">
-                                <p class="mb-0">Already have an account? <a href="{{ url_for('login') }}">Login now</a></p>
-                            </div>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6 col-lg-4"> <!-- Adjusted column width -->
+            <div class="card shadow border-0">
+                <div class="card-body p-5">
+                    <h3 class="text-center mb-4">Sign Up</h3> <!-- Added heading for clarity -->
+                    <form action="{{ url_for('signup') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="name" placeholder="Enter your username" required>
                         </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                        </div>
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p class="mb-0">Already have an account? <a href="{{ url_for('login') }}">Login now</a></p>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Sign Up Form End -->
+    </div>
+</div>
+<!-- Sign Up Form End -->
+
 
         <!-- Footer Start -->
         <div class="container-fluid bg-primary text-light footer wow fadeIn" data-wow-delay="0.1s">

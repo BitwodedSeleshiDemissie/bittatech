@@ -660,6 +660,90 @@ h6,
     background-color: #0077b5;
     color: white;
 }
+/*this is the change introduced to try attempt make the table concise */
+
+h3 {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* Container for All Service Categories */
+.service-categories {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px; /* Space between the columns */
+}
+
+/* Individual Column Styling for Each Table */
+.service-category {
+    flex: 1 1 23%; /* Make each table take up 23% of the container */
+    min-width: 250px; /* Prevent the tables from becoming too narrow */
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+}
+
+/* Table Styles */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-striped tr:nth-child(odd) {
+    background-color: #f2f2f2;
+}
+
+.table th, .table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #502890;
+    color: white;
+    font-weight: bold;
+}
+
+.table td {
+    background-color: #fff;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    /* Change the flex layout for smaller screens */
+    .service-categories {
+        flex-direction: column; /* Stack the service categories vertically */
+    }
+
+    .service-category {
+        flex: 1 1 100%; /* Each table takes up the full width */
+        margin-bottom: 20px; /* Add space between stacked tables */
+    }
+    
+    h3 {
+        font-size: 1.6em;
+    }
+    
+    .table th, .table td {
+        padding: 10px;
+    }
+}
+@media (min-width: 768px) {
+    .table th, .table td {
+        padding: 15px; /* Increased padding for larger screens */
+    }
+}
+
+@media (min-width: 1024px) {
+    .table th, .table td {
+        padding: 20px; /* Even larger padding for larger screens */
+    }
+}
 
 
 

@@ -79,6 +79,10 @@ class User(UserMixin):
         self.email = email
         self.password = password
 
+    # Flask-Login requires this method to return a string user ID
+    def get_id(self):
+        return str(self.id)
+
 def create_user(name, email, hashed_password):
     # Connect to PostgreSQL database
     conn = psycopg2.connect(
@@ -133,43 +137,46 @@ import logging
 def users():
     try:
         conn = get_db()  # Ensure this function returns a valid DB connection
-        cursor = conn.cursor()
-        
-        # Create users table with unique email and timestamp for creation
-        cursor.execute('''CREATE TABLE IF NOT EXISTS users (
-            id SERIAL PRIMARY KEY,
-            name TEXT NOT NULL,
-            email TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )''')
-        
+        with conn.cursor() as cursor:
+            # Create users table with unique email and timestamp for creation
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS users (
+                    id SERIAL PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
+                    password TEXT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
         conn.commit()
-        cursor.close()
-        conn.close()
-        
         logging.debug("Table 'users' checked/created.")
     except Exception as e:
-        logging.error(f"Error creating table: {e}")
+        logging.error(f"Error creating table 'users': {e}")
+    finally:
+        if conn:
+            conn.close()
 
-# Create messages table
 def create_table():
     try:
         conn = get_db()
-        cursor = conn.cursor()
-        cursor.execute('''CREATE TABLE IF NOT EXISTS messages (
-            id SERIAL PRIMARY KEY,
-            name TEXT NOT NULL,
-            email TEXT NOT NULL,
-            subject TEXT NOT NULL,
-            message TEXT NOT NULL
-        )''')
+        with conn.cursor() as cursor:
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS messages (
+                    id SERIAL PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    email TEXT NOT NULL,
+                    subject TEXT NOT NULL,
+                    message TEXT NOT NULL
+                )
+            ''')
         conn.commit()
-        cursor.close()
-        conn.close()
         logging.debug("Table 'messages' checked/created.")
     except Exception as e:
-        logging.error(f"Error creating table: {e}")
+        logging.error(f"Error creating table 'messages': {e}")
+    finally:
+        if conn:
+            conn.close()
+
 
 # Insert message into database
 def insert_message(name, email, subject, message):
@@ -315,7 +322,11 @@ def signup():
         email = request.form.get('email')
         password = request.form.get('password')
 
-        # Check if user already exists (you can implement this function)
+        # Validate input
+        if not name or not email or not password:
+            return "All fields are required.", 400
+
+        # Check if user already exists
         existing_user = get_user_by_email(email)
         if existing_user:
             return "User already exists. Please log in."
@@ -323,12 +334,13 @@ def signup():
         # Hash the password before storing it
         hashed_password = hash_password(password)
 
-        # Insert new user into the database (you can implement this function)
+        # Insert new user into the database
         create_user(name, email, hashed_password)
 
         return redirect(url_for('login'))  # Redirect to login after signup
 
     return render_template('signup.html')
+
 @app.route('/terms')
 def terms():
     return render_template('terms.html')
@@ -349,6 +361,7 @@ create_table()
 if __name__ == "__main__":
     # Create required tables
     create_table()  # Renamed for clarity
+    users() #ensures user table is created 
     # Start the Flask app
     app.run(debug=True)
 
