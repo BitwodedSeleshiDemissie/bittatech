@@ -39,7 +39,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 # Database URL
-DATABASE_URL = 'postgresql://bittatech_data_user:N7oibExmokOMOAhaMxXclZyRh5vyg8jp@dpg-ctec3aaj1k6c73at5hjg-a.frankfurt-postgres.render.com/bittatech_data'
+DATABASE_URL = 'postgresql://bittatechdata_user:Ph2wrbVh9ore83dNoKIgI7a2Hz6mZ3Or@dpg-cup47vdumphs73e3abbg-a.frankfurt-postgres.render.com/bittatechdata'
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -49,10 +49,10 @@ from psycopg2.extras import RealDictCursor
 def get_user_by_email(email):
     # Connection details
     conn = psycopg2.connect(
-        dbname="bittatech_data",              # Database name
-        user="bittatech_data_user",           # Username
-        password="N7oibExmokOMOAhaMxXclZyRh5vyg8jp",  # Password
-        host="dpg-ctec3aaj1k6c73at5hjg-a.frankfurt-postgres.render.com",  # Host (hostname only)
+        dbname="bittatechdata",              # Database name
+        user="bittatechdata_user",           # Username
+        password="Ph2wrbVh9ore83dNoKIgI7a2Hz6mZ3Or",  # Password
+        host="dpg-cup47vdumphs73e3abbg-a.frankfurt-postgres.render.com",  # Host (hostname only)
         port="5432"                           # Port
     )
     
@@ -86,10 +86,10 @@ class User(UserMixin):
 def create_user(name, email, hashed_password):
     # Connect to PostgreSQL database
     conn = psycopg2.connect(
-        dbname="bittatech_data",  
-        user="bittatech_data_user",    
-        password="N7oibExmokOMOAhaMxXclZyRh5vyg8jp",  
-        host="dpg-ctec3aaj1k6c73at5hjg-a.frankfurt-postgres.render.com",  
+        dbname="bittatechdata",  
+        user="bittatechdata_user",    
+        password="Ph2wrbVh9ore83dNoKIgI7a2Hz6mZ3Or",  
+        host="dpg-cup47vdumphs73e3abbg-a.frankfurt-postgres.render.com",  
         port="5432"           # Default PostgreSQL port
     )
     cursor = conn.cursor()
